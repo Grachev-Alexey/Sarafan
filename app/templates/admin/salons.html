@@ -1,0 +1,113 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Салоны{% endblock %}
+
+{% block page_title %}Управление салонами{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Список салонов</h3>
+                        <div class="card-tools">
+                        </div>
+                    </div>
+                    <div class="card-body table-responsive p-0" style="overflow-x: auto;">
+                        <table id="salonsTable" class="table table-hover text-nowrap" style="width:100%">
+                            <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Тип</th>
+                                <th>Название</th>
+                                <th>Категории</th>
+                                <th>Скидка</th>
+                                <th>Город</th>
+                                <th>Контакты</th>
+                                <th>Привел клиентов</th>
+                                <th>Получил клиентов</th>
+                                <th>Приоритет</th>
+                                <th>Связанный партнер</th>
+                                <th>Название (сообщ.)</th>
+                                <th>Действия</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for salon in salons %}
+                                <tr>
+                                    <td>{{ salon.id }}</td>
+                                    <td>
+                                        {% if salon.partner_type == 'salon' %}
+                                            Салон
+                                        {% else %}
+                                            Частный мастер
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ salon.name }}</td>
+                                    <td>
+                                        {% for category in salon.categories %}
+                                            {{ category.name }}{% if not loop.last %}, {% endif %}
+                                        {% endfor %}
+                                    </td>
+                                    <td>{{ salon.discount }}</td>
+                                    <td>{{ salon.city }}</td>
+                                    <td>{{ salon.contacts }}</td>
+                                    <td>{{ salon.clients_brought }}</td>
+                                    <td>{{ salon.clients_received }}</td>
+                                    <td>
+                                        {% if salon.priority %}
+                                            <span class="badge badge-success">Да</span>
+                                        {% else %}
+                                            <span class="badge badge-danger">Нет</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ salon.linked_partner_id }}</td>
+                                    <td>{{ salon.message_partner_name }}</td>
+                                    <td>
+                                        <a href="{{ url_for('admin.edit_salon', salon_id=salon.id) }}"
+                                           class="btn btn-primary btn-sm">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <form method="POST"
+                                              action="{{ url_for('admin.delete_salon', salon_id=salon.id) }}"
+                                              style="display: inline;">
+                                            <button type="submit" class="btn btn-danger btn-sm"
+                                                    onclick="return confirm('Вы уверены, что хотите удалить этого партнера?')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+$(document).ready(function () {
+    $('#salonsTable').DataTable({
+        "language": {
+            "url": "//cdn.datatables.net/plug-ins/1.13.4/i18n/ru.json"
+        },
+        // Изменяем расположение элементов управления DataTables
+        dom: '<"row px-2"<"col-md-6"B><"col-md-6"f>>rt<"bottom"lip><"clear">', 
+        buttons: [
+            {
+                extend: 'colvis',
+                text: '<i class="fas fa-columns"></i> Показать/скрыть столбцы'
+            }
+        ],
+        "columnDefs": [
+            {
+                "targets": [3, 4, 6, 10, 11], // Номера столбцов для скрытия (начиная с 0)
+                "visible": false
+            }
+        ]
+    });
+});
+    </script>
+{% endblock %}

@@ -1,0 +1,67 @@
+{% extends 'partner/base.html' %}
+
+{% block title %}Детальная статистика{% endblock %}
+
+{% block page_title %}Детальная статистика{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            {% if stat_type == 'brought' %}
+                                Приведенные клиенты
+                            {% elif stat_type == 'received' %}
+                                Полученные клиенты
+                            {% elif stat_type == 'invited' %}
+                                Приглашенные партнеры
+                            {% endif %}
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>Имя</th>
+                                <th>Номер телефона</th>
+                                <th>Дата</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for client in clients %}
+                                <tr>
+                                    <td>
+                                        {% if stat_type == 'invited' %}
+                                            {{ client.salon.name }}
+                                        {% else %}
+                                            {{ client.client_name }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if stat_type == 'invited' %}
+                                            {{ client.salon_id }}
+                                        {% else %}
+                                            {{ client.chat_id }}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if stat_type == 'invited' %}
+                                            {% set invitation = PartnerInvitation.query.filter_by(inviting_partner_id=current_user.partner[0].id, invited_partner_id=client.id).first() %}
+                                            {# Получаем первый элемент списка current_user.partner #}
+                                            {{ invitation.invitation_date.strftime('%d.%m.%Y') if invitation else '-' }}
+                                        {% else %}
+                                            {{ client.date.strftime('%d.%m.%Y') }}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

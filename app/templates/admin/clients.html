@@ -1,0 +1,86 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Клиенты{% endblock %}
+
+{% block page_title %}Управление клиентами{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Список клиентов</h3>
+                </div>
+                <div class="card-body table-responsive p-0" style="overflow-x: auto;">
+                    <table id="clientsTable" class="table table-hover text-nowrap" style="width:100%">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Номер телефона</th>
+                            <th>Имя</th>
+                            <th>Город</th>
+                            <th>Кто привел</th>
+                            <th>Дата регистрации</th>
+                            <th>Попыток осталось</th>
+                            <th>Статус скидки</th>
+                            <th>Последнее взаимодействие</th>
+                            <th>Отказался</th>
+                            <th>Посещенные салоны</th>
+                            <th>Выбранные салоны</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for client in clients %}
+                            <tr>
+                                <td>{{ client.id }}</td>
+                                <td>{{ client.chat_id }}</td>
+                                <td>{{ client.client_name }}</td>
+                                <td>{{ client.city }}</td>
+                                <td>{{ client.initial_salon_name }}</td>
+                                <td>{{ client.date }}</td>
+                                <td>{{ client.attempts_left }}</td>
+                                <td>
+                                    {% if client.discount_claimed %}
+                                        <span class="badge badge-success">Получена</span>
+                                    {% else %}
+                                        <span class="badge badge-warning">Не получена</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ client.last_interaction }}</td>
+                                <td>{{ client.rejected_salons }}</td>
+                                <td>{{ client.visited_salons }}</td>
+                                <td>{{ client.chosen_salons }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+$(document).ready(function () {
+    $('#clientsTable').DataTable({
+        "language": {
+            "url": "//cdn.datatables.net/plug-ins/1.13.4/i18n/ru.json"
+        },
+        // Изменяем расположение элементов управления DataTables
+        dom: '<"row px-2"<"col-md-6"B><"col-md-6"f>>rt<"bottom"lip><"clear">', 
+        buttons: [
+            {
+                extend: 'colvis',
+                text: '<i class="fas fa-columns"></i> Показать/скрыть столбцы'
+            }
+        ],
+        "columnDefs": [
+            {
+                "targets": [0, 5, 6, ], // Номера столбцов для скрытия (начиная с 0)
+                "visible": false
+            }
+        ]
+    });
+});
+    </script>
+{% endblock %}

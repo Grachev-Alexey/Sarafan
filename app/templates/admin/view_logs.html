@@ -1,0 +1,26 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Логи действий администратора{% endblock %}
+
+{% block page_title %}Логи действий администратора{% endblock %}
+
+{% block content %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Администратор</th>
+                <th>Действие</th>
+                <th>Время</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for log in logs %}
+                <tr>
+                    <td>{{ log.admin.username }}</td>
+                    <td>{{ log.action }}</td>
+                    <td>{{ log.timestamp }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

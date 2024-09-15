@@ -1,0 +1,590 @@
+{% extends 'partner/base.html' %}
+
+{% block title %}Настройки{% endblock %}
+
+{% block page_title %}Настройки{% endblock %}
+
+{% block content %}
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header p-2">
+            <ul class="nav nav-pills">
+              <li class="nav-item">
+                <a class="nav-link active" href="#salonSettings" data-toggle="tab">Настройки салона</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#integrationsSettings" data-toggle="tab">Интеграции</a>
+              </li>
+            </ul>
+          </div>
+          <div class="card-body">
+            <div class="tab-content">
+              <div class="tab-pane active" id="salonSettings">
+                <div class="card-header">
+                  <h3 class="card-title">Управление салонами</h3>
+                </div>
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-6">
+                      {% if partner.salons %}
+                        <div class="form-group">
+                          <label for="salonSelect">Выберите салон:</label>
+                          <select id="salonSelect" class="form-control" name="salon_id">
+                            {% for salon in partner.salons %}
+                              <option value="{{ salon.id }}" {% if salon.id == selected_salon_id %}selected{% endif %}>{{ salon.name }}</option>
+                            {% endfor %}
+                          </select>
+                        </div>
+                      {% endif %}
+
+                      {% if salon %}
+                        <form method="POST" action="{{ url_for('partner.edit_salon', salon_id=salon.id) }}">
+                          {{ edit_form.hidden_tag() }}
+                          {{ edit_form.salon_id(value=salon.id) }}
+                          <div class="form-group">
+                            {{ edit_form.salon_name.label(class="form-control-label") }}
+                            {{ edit_form.salon_name(class="form-control", value=salon.name, id="salon_name") }}
+                          </div>
+                          <div class="form-group">
+                            {{ edit_form.partner_type.label(class="form-label") }}
+                            {% for subfield in edit_form.partner_type %}
+                              <div class="form-check">
+                                {{ subfield(class="form-check-input") }}
+                                {{ subfield.label(class="form-check-label") }}
+                              </div>
+                            {% endfor %}
+                          </div>
+                          <div class="form-group">
+                            {{ edit_form.categories.label(class="form-label") }}
+                            {{ edit_form.categories(class="form-control selectpicker", multiple=True, data_live_search="true", data_size="10", title="Выберите категории") }}
+                          </div>
+                          <div class="form-group">
+                            {{ edit_form.city.label(class="form-label") }}
+                            {{ edit_form.city(class="form-control selectpicker", data_live_search="true", title="Выберите город") }}
+                          </div>
+                          <div class="form-group">
+                            {{ edit_form.discount.label(class="form-control-label") }}
+                            {{ edit_form.discount(class="form-control", id="discount") }}
+                          </div>
+                          <div class="form-group">
+                            {{ edit_form.contacts.label(class="form-control-label") }}
+                            {{ edit_form.contacts(class="form-control", id="contacts") }}
+                          </div>
+                          <div class="form-group">
+                            {{ edit_form.message_salon_name.label(class="form-control-label") }}
+                            {{ edit_form.message_salon_name(class="form-control", value=salon.message_partner_name, id="message_salon_name") }}
+                          </div>
+                          <div class="form-group">
+                            {{ edit_form.submit(class="btn btn-primary") }}
+                            <button type="submit" class="btn btn-danger ml-2" formmethod="POST"
+                                    formaction="{{ url_for('partner.delete_salon', salon_id=salon.id) }}"
+                                    onclick="return confirm('Вы уверены, что хотите удалить этот салон?')">
+                              Удалить салон
+                            </button>
+                            <a href="{{ url_for('partner.create_salon') }}" class="btn btn-primary ml-2">Добавить салон</a>
+                          </div>
+                        </form>
+                      {% else %}
+                        <p>Выберите салон для редактирования.</p>
+                      {% endif %}
+                    </div>
+                    <div class="col-md-6 d-flex justify-content-center align-items-center"> 
+                      {% if salon %}
+                        <div class="whatsapp-chat-preview">
+                          <div class="iphone-frame">
+                            <div class="iphone-top">
+                              <div class="speaker"></div>
+                              <div class="camera"></div>
+                            </div>
+                            <div class="whatsapp-header">
+                              <div class="whatsapp-header-center">
+                                <span class="contact-name">Сарафан</span>
+                              </div>
+                            </div>
+                            <div class="whatsapp-chat">
+                              <div class="message received">
+                                <span class="text spinning-wheel-message">
+                                  {{ sample_messages.spinning_wheel_message }} 
+                                </span>
+                              </div>
+                              <div class="message received">
+                                <span class="text discount-offer">
+                                  {{ sample_messages.discount_offer }}
+                                </span>
+                              </div>
+                              <div class="message sent">
+                                <span class="text">
+                                  Да
+                                </span>
+                              </div>
+                              <div class="message received">
+                                <span class="text claim-discount">
+                                  {{ sample_messages.claim_discount }}
+                                </span>
+                              </div>
+                            </div>
+                            <div class="whatsapp-footer">
+                              <div class="input-field">
+                                <i class="far fa-smile"></i>
+                                <input type="text" placeholder="Введите сообщение">
+                              </div>
+                              <div class="actions">
+                                <i class="fas fa-paperclip"></i>
+                                <i class="fas fa-camera"></i>
+                                <i class="fas fa-microphone"></i>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      {% else %}
+                        <p>Выберите салон для просмотра образцов сообщений.</p>
+                      {% endif %}
+                    </div>
+                  </div>
+                  {% if salon %}
+                    <div class="row mt-3">
+                      <div class="col-md-12">
+                        <div class="card">
+                          <div class="card-header">
+                            <h3 class="card-title">Ссылки для привлечения клиентов</h3>
+                          </div>
+                          <div class="card-body p-2">
+                            <div class="form-group">
+                              <label for="socialLink">Ссылка для соц.сетей:</label>
+                              <div class="input-group input-group-sm mb-2">
+                                <input type="text" class="form-control form-control-sm" id="socialLink"
+                                       value="https://wa.me/79933062088?text=%D0%9F%D0%BE%D0%BB%D1%83%D1%87%D0%B8%D1%82%D1%8C%20%D0%BF%D0%BE%D0%B4%D0%B0%D1%80%D0%BE%D0%BA%20({{ salon.id }})" readonly>
+                                <div class="input-group-append">
+                                  <button class="btn btn-outline-secondary btn-sm" type="button"
+                                          onclick="copyToClipboard('#socialLink')">
+                                    Копировать
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label for="nfcLink">Ссылка для NFC:</label>
+                              <div class="input-group input-group-sm">
+                                <input type="text" class="form-control form-control-sm" id="nfcLink"
+                                       value="https://wa.me/79933062088?text=Получить подарок ({{ salon.id }})" readonly>
+                                <div class="input-group-append">
+                                  <button class="btn btn-outline-secondary btn-sm" type="button"
+                                          onclick="copyToClipboard('#nfcLink')">
+                                    Копировать
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="tab-pane" id="integrationsSettings">
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="card mt-3">
+                      <div class="card-header">
+                        <h3 class="card-title">QR-код для WhatsApp</h3>
+                      </div>
+                      <div class="card-body">
+                        {% if salon %}
+                          <p>Отсканируйте QR-код, чтобы клиенты могли быстро получить подарок:</p>
+                          <button type="button" class="btn btn-primary" data-toggle="modal"
+                                  data-target="#qrCodeModalWhatsapp">
+                            Показать QR-код
+                          </button>
+                          <a href="{{ url_for('partner.qr_code_whatsapp', salon_id=salon.id) }}"
+                             class="btn btn-primary ml-2" download>Скачать</a>
+                        {% else %}
+                          <p>Выберите салон для просмотра и скачивания QR-кода.</p>
+                        {% endif %}
+                      </div>
+                    </div>
+                    <div class="card mt-3">
+                      <div class="card-header">
+                        <h3 class="card-title">Telegram-уведомления</h3>
+                      </div>
+                      <div class="card-body">
+                        {% if partner.telegram_chat_id %}
+                          <p>Telegram-оповещения подключены</p>
+                          <form method="POST"
+                                action="{{ url_for('partner.disable_telegram_notifications') }}">
+                            <button type="submit" class="btn btn-danger">Отключить Telegram
+                            </button>
+                          </form>
+                        {% else %}
+                          <p>Отсканируйте QR-код, чтобы подключить уведомления в Telegram:</p>
+                          <button type="button" class="btn btn-primary" data-toggle="modal"
+                                  data-target="#qrCodeModalTelegram">
+                            Подключить Telegram
+                          </button>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="card mt-3">
+                      <div class="card-header">
+                        <h3 class="card-title">AmoCRM</h3>
+                      </div>
+                      <div class="card-body">
+                        {% if partner.amocrm_subdomain %}
+                          <h3>Настройки соответствия полей</h3>
+                          <form method="POST" action="{{ url_for('partner.save_amocrm_field_mapping') }}">
+                            <table class="table table-bordered">
+                              <thead>
+                              <tr>
+                                <th>Поле в Сарафан</th>
+                                <th>Поле в AmoCRM</th>
+                              </tr>
+                              </thead>
+                              <tbody>
+                              {% for key, value in {'chat_id': 'Номер телефона', 'city': 'Город'}.items() %}
+                                <tr>
+                                  <td>{{ value }}</td>
+                                  <td>
+                                    <select class="form-control" name="amocrm_{% if key == 'chat_id' %}contact{% else %}lead{% endif %}_field_{{ key }}">
+                                      <option value="">-- Не выбрано --</option>
+                                      {% if key == 'chat_id' %}
+                                        {% for field_id, field_data in amocrm_contacts_fields.items() %}
+                                          <option value="{{ field_id }}"
+                                                  {% if amocrm_field_mapping.get(key)|string == field_id|string %}selected{% endif %}>
+                                            {{ field_data.name }}
+                                          </option>
+                                        {% endfor %}
+                                      {% else %}
+                                        {% for field_id, field_data in amocrm_leads_fields.items() %}
+                                          <option value="{{ field_id }}"
+                                                  {% if amocrm_field_mapping.get(key)|string == field_id|string %}selected{% endif %}>
+                                            {{ field_data.name }}
+                                          </option>
+                                        {% endfor %}
+                                      {% endif %}
+                                    </select>
+                                  </td>
+                                </tr>
+                              {% endfor %}
+                              <tr>
+                                <td>Воронка</td>
+                                <td>
+                                  <select class="form-control" id="amocrmPipeline" name="amocrm_pipeline">
+                                    <option value="">-- Не выбрано --</option>
+                                    {% for pipeline in amocrm_pipelines['_embedded']['pipelines'] %}
+                                      <option value="{{ pipeline['id'] }}"
+                                              {% if amocrm_settings.get('pipeline_id')|string == pipeline['id']|string %}selected{% endif %}>
+                                        {{ pipeline['name'] }}
+                                      </option>
+                                    {% endfor %}
+                                  </select>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>Статус</td>
+                                <td>
+                                  <select class="form-control" id="amocrmStage" name="amocrm_stage">
+                                    <option value="">-- Не выбрано --</option>
+                                    {% if amocrm_settings.get('pipeline_id') %}
+                                      {% for pipeline in amocrm_pipelines['_embedded']['pipelines'] %}
+                                        {% if pipeline['id']|string == amocrm_settings.get('pipeline_id')|string %}
+                                          {% for status in pipeline['stages']['_embedded']['statuses'] %}
+                                            <option value="{{ status['id'] }}"
+                                                    {% if amocrm_settings.get('stage_id')|string == status['id']|string %}selected{% endif %}>
+                                              {{ status['name'] }}
+                                            </option>
+                                          {% endfor %}
+                                        {% endif %}
+                                      {% endfor %}
+                                    {% endif %}
+                                  </select>
+                                </td>
+                              </tr>
+                              </tbody>
+                            </table>
+                            <button type="submit" class="btn btn-primary">Сохранить настройки</button>
+                            <button type="submit" class="btn btn-danger ml-2" formmethod="POST"
+                                    formaction="{{ url_for('partner.disconnect_amocrm') }}">
+                              Отключить AmoCRM
+                            </button>
+                            {% if partner.amocrm_subdomain and partner.amocrm_field_mapping %}
+                              <button type="button" class="btn btn-primary ml-2" data-toggle="modal" data-target="#testAmocrmModal">
+                                Протестировать интеграцию
+                              </button>
+                            {% endif %} 
+                          </form>
+                        {% else %}
+                          <p>Подключите свой аккаунт AmoCRM: 
+                            <a href="https://sarafan.club/connect_amocrm/" target="_blank" title="Инструкция по подключению AmoCRM">
+                              <i class="fas fa-question-circle"></i>
+                            </a>
+                          </p>
+                          <button type="button" class="btn btn-primary" data-toggle="modal"
+                                  data-target="#amocrmModal">
+                            Подключить AmoCRM
+                          </button>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal для WhatsApp -->
+  <div class="modal fade" id="qrCodeModalWhatsapp" tabindex="-1" role="dialog"
+       aria-labelledby="qrCodeModalWhatsappLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="qrCodeModalWhatsappLabel">QR-код для WhatsApp</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body text-center">
+          <img src="data:image/png;base64,{{ qr_code_image_base64_whatsapp }}" alt="QR-код для WhatsApp">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal для Telegram -->
+  <div class="modal fade" id="qrCodeModalTelegram" tabindex="-1" role="dialog"
+       aria-labelledby="qrCodeModalTelegramLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="qrCodeModalTelegramLabel">Подключить Telegram</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body text-center">
+          <img src="data:image/png;base64,{{ qr_code_image_base64_telegram }}"
+               alt="QR-код для подключения Telegram">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal для AmoCRM -->
+  <div class="modal fade" id="amocrmModal" tabindex="-1" role="dialog" aria-labelledby="amocrmModalLabel"
+       aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="amocrmModalLabel">Подключить AmoCRM</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Чтобы подключить AmoCRM, вам потребуется ваш поддомен и API ключ. 
+            <a href="https://sarafan.club/connect_amocrm/" target="_blank">
+              Узнать как получить поддомен и API ключ.
+            </a>
+          </p>
+          <form id="amocrmConnectForm" method="POST" action="{{ url_for('partner.connect_amocrm') }}">
+            <div class="form-group">
+              <label for="amocrmSubdomain">Поддомен:</label>
+              <input type="text" class="form-control" id="amocrmSubdomain" name="subdomain"
+                     placeholder="yourcompany.amocrm.ru" required>
+            </div>
+            <div class="form-group">
+              <label for="amocrmApiKey">API ключ:</label>
+              <input type="text" class="form-control" id="amocrmApiKey" name="api_key" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Подключить</button>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal для тестирования AmoCRM -->
+  <div class="modal fade" id="testAmocrmModal" tabindex="-1" role="dialog" aria-labelledby="testAmocrmModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="testAmocrmModalLabel">Тестирование интеграции с AmoCRM</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Вы можете протестировать интеграцию, указав тестовые данные клиента:</p>
+          <form id="testAmocrmForm" method="POST">
+            <div class="form-group">
+              <label for="testClientName">Имя клиента:</label>
+              <input type="text" class="form-control" id="testClientName" name="testClientName" placeholder="Введите имя клиента">
+            </div>
+            <div class="form-group">
+              <label for="testClientPhone">Номер телефона:</label>
+              <input type="text" class="form-control" id="testClientPhone" name="testClientPhone" placeholder="Введите номер телефона">
+            </div>
+            <div class="form-group">
+              <label for="testClientCity">Город:</label>
+              <input type="text" class="form-control" id="testClientCity" name="testClientCity" placeholder="Введите город">
+            </div>
+            <button type="button" class="btn btn-primary" id="testAmocrmIntegration">
+              Протестировать интеграцию
+            </button>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Функция для копирования текста в буфер обмена
+    function copyToClipboard(elementId) {
+      const copyText = document.querySelector(elementId);
+      copyText.select();
+      copyText.setSelectionRange(0, 99999); // Для мобильных устройств
+      document.execCommand("copy");
+      Swal.fire({
+        icon: 'success',
+        title: 'Скопировано!',
+        showConfirmButton: false,
+        timer: 1500
+      });
+    }
+
+    $(document).ready(function () {
+      const claimDiscountTemplate = Handlebars.compile(`{{ claim_discount_template }}`);
+      const discountOfferTemplate = Handlebars.compile(`{{ discount_offer_template }}`);
+      const spinningWheelMessageTemplate = Handlebars.compile(`{{ spinning_wheel_message_template }}`);
+
+      function updateSampleMessages() {
+        const data = {
+          salonName: $('#salon_name').val(),
+          discount: $('#discount').val(),
+          contacts: $('#contacts').val(),
+          message_salon_name: $('#message_salon_name').val(),
+          categories: "{{ salon.categories|join(', ') }}"
+        };
+        $('.claim-discount').html(claimDiscountTemplate(data));
+        $('.discount-offer').html(discountOfferTemplate(data));
+        $('.spinning-wheel-message').html(spinningWheelMessageTemplate(data));
+      }
+
+      $('#salon_name, #discount, #contacts, #message_salon_name').on('input', updateSampleMessages);
+      updateSampleMessages();
+      $('.selectpicker').selectpicker({
+        liveSearch: true,
+        size: 10
+      });
+      // Обработчик изменения выбранного салона
+      $('#salonSelect').change(function () {
+        const selectedSalonId = $(this).val();
+        window.location.href = '{{ url_for("partner.settings") }}?salon_id=' + selectedSalonId;
+      });
+
+      // Обработчик изменения выбранной воронки
+      $('#amocrmPipeline').change(function () {
+        const pipelineId = $(this).val();
+        const amocrmStages = $('#amocrmStage');
+        amocrmStages.empty();
+        amocrmStages.append('<option value="">-- Не выбрано --</option>');
+
+        if (pipelineId) {
+          const pipelines = {{ amocrm_pipelines|tojson|safe }};
+          const pipeline = pipelines['_embedded']['pipelines'].find(p => p['id'] === parseInt(pipelineId));
+          if (pipeline && pipeline.stages) { // Проверяем наличие stages
+            pipeline.stages['_embedded']['statuses'].forEach(status => {
+              // Выбираем сохраненный этап
+              let selected = '';
+              if ('{{ amocrm_settings.get('stage_id')|string }}' === status['id'].toString()) {
+                selected = 'selected';
+              }
+              amocrmStages.append(`<option value="${status['id']}" ${selected}>${status['name']}</option>`);
+            });
+          }
+        }
+      });
+
+      // Вызываем обработчик изменения при загрузке страницы,
+      // чтобы заполнить список этапов для выбранной воронки
+      $('#amocrmPipeline').trigger('change');
+
+      // Проверяем наличие параметра tab в URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const activeTab = urlParams.get('tab');
+      if (activeTab === 'integrationsSettings') {
+        // Активируем вкладку Интеграции
+        $('.nav-pills a[href="#integrationsSettings"]').tab('show');
+      }
+
+      // Обработчик кнопки "Протестировать интеграцию"
+      $('#testAmocrmIntegration').click(function () {
+        // Изменяем текст кнопки на "Подождите..."
+        $(this).text('Подождите...');
+        const testData = {
+          testClientName: $('#testClientName').val(),
+          testClientPhone: $('#testClientPhone').val(),
+          testClientCity: $('#testClientCity').val()
+        };
+
+        $.ajax({
+          url: "{{ url_for('partner.test_amocrm_integration') }}",
+          type: 'POST',
+          data: testData,
+          success: function (response) {
+            if (response.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Успешно!',
+                    text: response.message
+                }).then((result) => {
+                    // Закрываем модальное окно после успешного теста
+                    $('#testAmocrmModal').modal('hide');
+                    // Возвращаем текст кнопки после завершения запроса
+                    $('#testAmocrmIntegration').text('Протестировать интеграцию');
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Ошибка!',
+                    text: response.message
+                }).then((result) => {
+                    // Возвращаем текст кнопки после завершения запроса
+                    $('#testAmocrmIntegration').text('Протестировать интеграцию');
+                });
+            }
+          },
+          error: function () {
+            Swal.fire({
+                icon: 'error',
+                title: 'Ошибка!',
+                text: 'Произошла ошибка при отправке запроса.'
+            }).then((result) => {
+                // Возвращаем текст кнопки после завершения запроса
+                $('#testAmocrmIntegration').text('Протестировать интеграцию');
+            });
+          }
+        });
+      });
+    });
+  </script>
+{% endblock %}

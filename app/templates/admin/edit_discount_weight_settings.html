@@ -1,0 +1,43 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Настройки весов скидок{% endblock %}
+
+{% block page_title %}Настройки весов скидок{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Редактировать настройки весов</h3>
+                    </div>
+                    <form method="POST" action="">
+                        {{ form.hidden_tag() }}
+                        <div class="card-body">
+                            <div class="form-group">
+                                {{ form.ratio_40_80_weight.label(class="form-label") }}
+                                {{ form.ratio_40_80_weight(class="form-control") }}
+                            </div>
+                            <div class="form-group">
+                                {{ form.ratio_30_40_weight.label(class="form-label") }}
+                                {{ form.ratio_30_40_weight(class="form-control") }}
+                            </div>
+                            <div class="form-group">
+                                {{ form.ratio_below_30_weight.label(class="form-label") }}
+                                {{ form.ratio_below_30_weight(class="form-control") }}
+                            </div>
+                            <div class="form-group">
+                                {{ form.partners_invited_weight.label(class="form-label") }}
+                                {{ form.partners_invited_weight(class="form-control") }}
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            {{ form.submit(class="btn btn-primary") }}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,79 @@
+{% extends 'admin/base.html' %}
+
+{% macro render_field(field) %}
+    <div class="form-group">
+        {{ field.label(class="form-label") }}
+        {{ field(class="form-control") }}
+    </div>
+{% endmacro %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block page_title %}{{ title }}{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">{{ title }}</h3>
+                    </div>
+                    <form method="POST" action="">
+                        {{ form.hidden_tag() }}
+                        <div class="card-body">
+                            {{ render_field(form.id) }}
+                            <div class="form-group">
+                                {{ form.partner_type.label(class="form-label") }}
+                                <div class="partner-type-options">
+                                    {% for subfield in form.partner_type %}
+                                        <div class="form-check">
+                                            {{ subfield(class="form-check-input", id="partner_type-" + subfield.id|replace('partner_type-', '')) }}
+                                            {{ subfield.label(class="form-check-label") }}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                {{ form.categories.label(class="form-label") }}
+                                {{ form.categories(class="form-control selectpicker", multiple=True, data_live_search="true", data_size="10", title="Выберите категории", id="categoriesSelect") }}
+                                <input type="hidden" name="categories" id="hiddenCategories" value="{{ salon.categories|map(attribute='id')|join(',') }}">
+                            </div>
+                            {{ render_field(form.name) }}
+                            {{ render_field(form.discount) }}
+                            <div class="form-group">
+                                {{ form.city.label(class="form-label") }}
+                                {{ form.city(class="form-control selectpicker", data_live_search="true", title="Выберите город") }}
+                            </div>
+                            {{ render_field(form.contacts) }}
+                            <div class="form-group form-check">
+                                {{ form.priority(class="form-check-input") }}
+                                {{ form.priority.label(class="form-check-label") }}
+                            </div>
+                            {{ render_field(form.linked_partner_id) }}
+                            {{ render_field(form.message_partner_name) }}
+                        </div>
+                        <div class="card-footer">
+                            {{ form.submit(class="btn btn-primary", type="submit") }}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.selectpicker').selectpicker({
+                liveSearch: true,
+                size: 10
+            });
+
+            // Обновляем скрытое поле при изменении выбора категорий
+            $('#categoriesSelect').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
+                let selectedCategories = $(this).val();
+                $('#hiddenCategories').val(selectedCategories.join(','));
+            });
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,397 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Главная{% endblock %}
+
+{% block page_title %}Главная{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-3 col-6">
+            <div class="small-box bg-info">
+                <div class="inner">
+                    <h3>{{ salon_count }}</h3>
+                    <p>Салонов</p>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-building"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-6">
+            <div class="small-box bg-success">
+                <div class="inner">
+                    <h3>{{ partner_count }}</h3>
+                    <p>Партнеров</p>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-users"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-6">
+            <div class="small-box bg-warning">
+                <div class="inner">
+                    <h3>{{ client_count }}</h3>
+                    <p>Клиентов</p>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-user-friends"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-6">
+            <div class="small-box bg-danger">
+                <div class="inner">
+                    <h3>{{ claimed_gifts_count }}</h3>
+                    <p>Подарков забрали</p>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-gift"></i>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-8">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Статистика всех партнеров</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mt-4">
+                                <div class="col-md-12">
+                                    <div class="text-right">
+                                        <label for="periodSelect">Выберите период:</label>
+                                        <select id="periodSelect" class="form-control ml-2" style="width: auto; display: inline-block;">
+                                            <option value="week">Неделя</option>
+                                            <option value="month" selected>Месяц</option>
+                                            <option value="year">Год</option>
+                                            <option value="all">Всё время</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Клиенты</h5>
+                                            <div id="clientsChart"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Предложения</h5>
+                                            <div id="offersChart"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-4">
+                                <div class="col-md-6">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Приглашено партнеров</h5>
+                                            <div id="partnersInvitedChart"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Топ 10 самых активных партнеров</h3>
+    </div>
+    <div class="card-body">
+        <ul class="list-group list-group-flush" id="top-active-partners">
+            {% for partner in top_active_partners %}
+            <li class="list-group-item {% if loop.index > 5 %}additional-item{% endif %}">
+                {{ loop.index }}. {{ partner.user.username }} - 
+                {% if partner.salons %}
+                    {{ partner.salons[0].name }} 
+                    {% if partner.salons|length > 1 %}
+                        (+ еще {{ partner.salons|length - 1 }} {% if (partner.salons|length - 1) == 1 %}салон{% else %}салона{% endif %})
+                    {% endif %}
+                {% else %}
+                    Нет салонов
+                {% endif %}
+                 - {{ partner.clients_brought }} клиентов
+            </li>
+            {% endfor %}
+        </ul>
+        {% if top_active_partners|length > 5 %}
+        <button class="btn btn-primary btn-sm mt-2" id="toggle-active-partners">Развернуть</button>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card mt-4">
+    <div class="card-header">
+        <h3 class="card-title">Топ 10 самых неактивных партнеров</h3>
+    </div>
+    <div class="card-body">
+        <ul class="list-group list-group-flush" id="top-inactive-partners">
+            {% for partner in top_inactive_partners %}
+            <li class="list-group-item {% if loop.index > 5 %}additional-item{% endif %}">
+                {{ loop.index }}. {{ partner.user.username }} - 
+                {% if partner.salons %}
+                    {{ partner.salons[0].name }} 
+                    {% if partner.salons|length > 1 %}
+                        (+ еще {{ partner.salons|length - 1 }} {% if (partner.salons|length - 1) == 1 %}салон{% else %}салона{% endif %})
+                    {% endif %}
+                {% else %}
+                    Нет салонов
+                {% endif %}
+                - {{ partner.clients_brought }} клиентов
+            </li>
+            {% endfor %}
+        </ul>
+        {% if top_inactive_partners|length > 5 %}
+        <button class="btn btn-primary btn-sm mt-2" id="toggle-inactive-partners">Развернуть</button>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card mt-4">
+    <div class="card-header">
+        <h3 class="card-title">Топ 10 партнеров с отказами от скидок</h3>
+    </div>
+    <div class="card-body">
+        <ul class="list-group list-group-flush" id="top-rejected-partners">
+            {% for partner, rejections in top_rejected_partners %}
+            <li class="list-group-item {% if loop.index > 5 %}additional-item{% endif %}">
+                {{ loop.index }}. {{ partner.user.username }} - 
+                {% if partner.salons %}
+                    {{ partner.salons[0].name }} 
+                    {% if partner.salons|length > 1 %}
+                        (+ еще {{ partner.salons|length - 1 }} {% if (partner.salons|length - 1) == 1 %}салон{% else %}салона{% endif %})
+                    {% endif %}
+                {% else %}
+                    Нет салонов
+                {% endif %}
+                - {{ rejections }} отказов
+            </li>
+            {% endfor %}
+        </ul>
+        {% if top_rejected_partners|length > 5 %}
+        <button class="btn btn-primary btn-sm mt-2" id="toggle-rejected-partners">Развернуть</button>
+        {% endif %}
+    </div>
+</div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Функция для создания линейного графика
+function createLineChart(canvasId, labels, data1, data2, label1, label2, color1, color2) {
+  let series = [{
+    name: label1,
+    data: data1
+  }];
+
+  if (data2) {
+    series.push({
+      name: label2,
+      data: data2
+    });
+  }
+
+  let colors = [color1];
+  if (color2) {
+    colors.push(color2);
+  }
+
+  return new ApexCharts(document.querySelector(canvasId), {
+    chart: {
+      type: 'line',
+      height: 250,
+      toolbar: {
+        show: false
+      },
+      zoom: {
+        enabled: false
+      },
+      foreColor: '#ccc'
+    },
+    series: series,
+    xaxis: {
+      categories: labels.map(formatDate),
+      showForNullSeries: false
+    },
+    yaxis: {
+      forceNiceScale: true,
+      showForNullSeries: false
+    },
+    theme: {
+      mode: 'dark'
+    },
+    dataLabels: {
+      enabled: false
+    },
+    stroke: {
+      curve: 'smooth',
+      width: 3
+    },
+    grid: {
+      borderColor: '#535A6C'
+    },
+    colors: colors,
+    markers: {
+      size: 6,
+      strokeWidth: 0,
+      hover: {
+        size: 9
+      }
+    },
+  });
+}
+
+// Функция для форматирования даты
+function formatDate(dateString) {
+  const options = { month: 'long', day: 'numeric' };
+  const date = new Date(dateString);
+  return date.toLocaleDateString('ru-RU', options);
+}
+
+// Получение данных для графиков
+const clientsBroughtData = {{ clients_brought_data|tojson|safe }};
+const offersShownData = {{ offers_shown_data|tojson|safe }};
+const offersAcceptedData = {{ offers_accepted_data|tojson|safe }};
+const offersRejectedData = {{ offers_rejected_data|tojson|safe }};
+const partnersInvitedData = {{ partners_invited_data|tojson|safe }};
+
+// Создание экземпляров графиков
+let clientsChart = createLineChart(
+  '#clientsChart',
+  clientsBroughtData.labels,
+  clientsBroughtData.data,
+  offersAcceptedData.data,
+  'Приведено',
+  'Получено',
+  '#0396FF',
+  '#5961F9'
+);
+let offersChart = createLineChart(
+  '#offersChart',
+  offersShownData.labels,
+  offersShownData.data,
+  offersRejectedData.data,
+  'Показано',
+  'Отказы',
+  '#4C83FF',
+  '#FD6585'
+);
+let partnersInvitedChart = createLineChart(
+  '#partnersInvitedChart',
+  partnersInvitedData.labels,
+  partnersInvitedData.data,
+  null,
+  'Приглашено партнеров',
+  null,
+  '#FFD3A5',
+  null
+);
+
+// Отрисовка графиков
+clientsChart.render();
+offersChart.render();
+partnersInvitedChart.render();
+
+// Обработчик изменения выбранного периода
+$('#periodSelect').change(function (event) {
+  const selectedPeriod = $(this).val();
+  updateAllCharts(selectedPeriod);
+});
+
+// Функция для обновления всех графиков
+function updateAllCharts(period) {
+  $.ajax({
+    url: '{{ url_for("admin.chart_data") }}',
+    type: 'GET',
+    data: { period: period },
+    success: function (data) {
+      // Обновление данных графиков
+      updateChart(clientsChart, data.clients_brought.labels, data.clients_brought.data, data.offers_accepted.data, 'Приведено', 'Получено');
+      updateChart(offersChart, data.offers_shown.labels, data.offers_shown.data, data.offers_rejected.data, 'Показано', 'Отказы');
+      updateChart(partnersInvitedChart, data.partners_invited.labels, data.partners_invited.data, null, 'Приглашено партнеров', null);
+    },
+    error: function (error) {
+      console.error("Ошибка при получении данных:", error);
+    }
+  });
+}
+
+// Функция для обновления графика
+function updateChart(chart, labels, data1, data2, label1, label2) {
+  let series = [{
+    name: label1,
+    data: data1
+  }];
+
+  if (data2) {
+    series.push({
+      name: label2,
+      data: data2
+    });
+  }
+
+  chart.updateOptions({
+    xaxis: {
+      categories: labels.map(formatDate)
+    },
+    series: series
+  });
+}
+
+// Обработчик для кнопок "Развернуть/Свернуть"
+function setupToggleButtons() {
+    $('.additional-item').hide(); // Скрываем дополнительные элементы
+
+    $('#toggle-active-partners').click(function () {
+        toggleList('#top-active-partners', this);
+    });
+
+    $('#toggle-inactive-partners').click(function () {
+        toggleList('#top-inactive-partners', this);
+    });
+
+    $('#toggle-rejected-partners').click(function () {
+        toggleList('#top-rejected-partners', this);
+    });
+}
+
+// Функция для сворачивания/разворачивания списка
+function toggleList(listId, button) {
+    var list = $(listId).find('.additional-item');
+    var isExpanded = $(list).is(':visible');
+
+    if (isExpanded) {
+        list.slideUp();
+        $(button).text('Развернуть');
+    } else {
+        list.slideDown();
+        $(button).text('Свернуть');
+    }
+}
+
+// Инициализация кнопок при загрузке страницы
+$(document).ready(function () {
+    setupToggleButtons();
+});
+</script>
+{% endblock %}

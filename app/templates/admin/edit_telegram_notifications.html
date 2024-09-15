@@ -1,0 +1,41 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Telegram-уведомления{% endblock %}
+
+{% block page_title %}Telegram-уведомления{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Telegram-уведомления</h3>
+                    </div>
+                    <div class="card-body">
+                        {% if qr_code_image %}
+                            <div class="form-group">
+                                <label for="qrCode">Отсканируйте QR-код, чтобы подключить уведомления:</label>
+                                <img id="qrCode" src="data:image/png;base64,{{ qr_code_image }}" alt="QR-код для подключения Telegram">
+                            </div>
+                        {% endif %}
+
+                        <h4>Подключенные администраторы:</h4>
+                        <ul>
+                        {% for admin in connected_admins %}
+                            <li>
+                                {{ admin.name }} (Chat ID: {{ admin.chat_id }})
+                                <form method="POST" action="{{ url_for('admin.disconnect_admin', chat_id=admin.chat_id) }}" style="display: inline;">
+                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Вы уверены, что хотите отключить уведомления для этого администратора?')">
+                                        <i class="fas fa-times"></i> Отключить
+                                    </button>
+                                </form>
+                            </li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

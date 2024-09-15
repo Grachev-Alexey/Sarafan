@@ -1,0 +1,317 @@
+{% extends 'partner/base.html' %}
+
+{% block title %}Личный кабинет партнера{% endblock %}
+
+{% block page_title %}Главная{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-8">
+      <div class="row mt-4">
+        <div class="col-md-4">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Всего привел/получил клиентов</h5>
+              <p class="card-text display-4">{{ total_clients_brought }} / {{ total_clients_received }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Всего показов/отказов</h5>
+              <p class="card-text display-4">{{ total_offers_shown }} / {{ total_offers_rejected }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Всего приглашено партнеров</h5>
+              <p class="card-text display-4">{{ total_partners_invited }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-4">
+        <div class="col-md-12">
+          <div class="text-right">
+            <label for="salonSelect">Выберите салон:</label>
+            <select id="salonSelect" class="form-control ml-2" style="width: auto; display: inline-block;">
+              {% for salon in partner.salons %}
+              <option value="{{ salon.id }}" {% if salon.id == selected_salon_id %}selected{% endif %}>
+                {{ salon.name }}
+              </option>
+              {% endfor %}
+            </select>
+            <label for="periodSelect" class="ml-2">Выберите период:</label>
+            <select id="periodSelect" class="form-control ml-2" style="width: auto; display: inline-block;">
+              <option value="week" {% if period == 'week' %}selected{% endif %}>Неделя</option>
+              <option value="month" {% if period == 'month' %}selected{% endif %}>Месяц</option>
+              <option value="year" {% if period == 'year' %}selected{% endif %}>Год</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+<div class="row mt-4">
+
+  <div class="col-md-4"> 
+        <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">Клиенты</h5>
+      <div id="clientsChart"></div>
+    </div>
+	</div>
+  </div>
+  <div class="col-md-4"> 
+        <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">Предложения</h5>
+      <div id="offersChart"></div>
+	  </div>
+    </div>
+  </div>
+  <div class="col-md-4"> 
+        <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">Приглашено партнеров</h5>
+      <div id="partnersInvitedChart"></div>
+	  </div>
+    </div>
+  </div>
+</div>
+
+    </div>
+
+    <div class="col-md-4">
+<div class="card">
+  <div class="card-header">
+    <h3 class="card-title">Последние действия</h3>
+  </div>
+  <div class="card-body">
+    <ul class="list-group list-group-flush">
+      {% for action in last_actions %}
+      <li class="list-group-item">{{ action }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+</div> 
+
+      <div class="card mt-4">
+        <div class="card-header">
+          <h3 class="card-title">Советы и рекомендации</h3>
+        </div>
+        <div class="card-body">
+          <ul>
+            {% for tip in tips_and_tricks %}
+            <li>{{ tip.text }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+
+      <div class="card mt-4">
+        <div class="card-header">
+          <h3 class="card-title">Новости и обновления</h3>
+        </div>
+        <div class="card-body">
+          <ul>
+            {% for news in news_and_updates %}
+            <li>{{ news.text }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Функция для обновления графика
+function updateChart(chart, labels, data1, data2, label1, label2) {
+  // Форматируем даты перед обновлением графика
+  const formattedLabels = labels.map(formatDate);
+
+  // Создаем массив series динамически
+  let series = [{
+    name: label1,
+    data: data1
+  }];
+  if (data2) {
+    series.push({
+      name: label2,
+      data: data2
+    });
+  }
+
+  chart.updateOptions({
+    xaxis: {
+      categories: formattedLabels 
+    },
+    series: series // Используем динамический массив series
+  });
+}
+
+// Функция для форматирования даты
+function formatDate(dateString) {
+  const options = { month: 'long', day: 'numeric' };
+  const date = new Date(dateString);
+  return date.toLocaleDateString('ru-RU', options);
+}
+
+// Функция для создания линейного графика
+function createLineChart(canvasId, labels, data1, data2, label1, label2, color1, color2) {
+  const formattedLabels = labels.map(formatDate);
+
+  let series = [{
+    name: label1,
+    data: data1
+  }];
+
+  if (data2) {
+    series.push({
+      name: label2,
+      data: data2
+    });
+  }
+
+  let colors = [color1];
+  if (color2) {
+    colors.push(color2);
+  }
+
+  return new ApexCharts(document.querySelector(canvasId), {
+    chart: {
+      type: 'line',
+      height: 350,
+      toolbar: {
+        show: false
+      },
+      zoom: {
+        enabled: false
+      },
+      foreColor: '#ccc'
+    },
+    series: series,
+    xaxis: {
+      categories: formattedLabels,
+	  showForNullSeries: false
+    },
+    yaxis: {
+      showForNullSeries: false,
+      forceNiceScale: true
+    },	
+    theme: {
+      mode: 'dark'
+    },
+    dataLabels: {
+      enabled: false
+    },
+    stroke: {
+      curve: 'smooth',
+      width: 3
+    },
+    grid: {
+      borderColor: '#535A6C'
+    },
+    colors: colors,
+    markers: {
+      size: 6,
+      strokeWidth: 0,
+      hover: {
+        size: 9
+      }
+    },
+  });
+}
+
+// Получение данных для графиков
+const clientsBroughtData = {{ clients_brought_data|tojson|safe }};
+const offersShownData = {{ offers_shown_data|tojson|safe }};
+const offersAcceptedData = {{ offers_accepted_data|tojson|safe }};
+const offersRejectedData = {{ offers_rejected_data|tojson|safe }};
+const partnersInvitedData = {{ partners_invited_data|tojson|safe }};
+
+let clientsChart = createLineChart(
+  '#clientsChart', 
+  offersShownData.labels,
+  clientsBroughtData.data, 
+  offersAcceptedData.data, 
+  'Приведено', 
+  'Получено', 
+  '#0396FF', 
+  '#5961F9'
+);
+let offersChart = createLineChart(
+  '#offersChart', 
+  offersShownData.labels, 
+  offersShownData.data, 
+  offersRejectedData.data, 
+  'Показано', 
+  'Отказы', 
+  '#4C83FF', 
+  '#FD6585'
+);
+let partnersInvitedChart = createLineChart(
+  '#partnersInvitedChart', 
+  partnersInvitedData.labels, 
+  partnersInvitedData.data, 
+  null,
+  'Приглашенно партнеров', 
+  null,
+  '#FFD3A5', 
+  null
+);
+
+// Отрисовка графиков
+clientsChart.render();
+offersChart.render();
+partnersInvitedChart.render();
+
+// Обработчик изменения выбранного периода и салона
+$('#periodSelect, #salonSelect').change(function (event) {
+  const selectedPeriod = $('#periodSelect').val();
+  const selectedSalonId = $('#salonSelect').val();
+
+  // Отправка AJAX-запроса на сервер
+  $.ajax({
+    url: '{{ url_for("partner.salon_stats", salon_id="") }}' + selectedSalonId,
+    type: 'GET',
+    data: { period: selectedPeriod },
+    success: function (data) {
+      // Обновление данных графиков
+      updateChart(
+        clientsChart, 
+        data.clients_brought_data.labels, 
+        data.clients_brought_data.data, 
+        data.offers_accepted_data.data, 
+        'Приведено', 
+        'Получено'
+      );
+      updateChart(
+        offersChart, 
+        data.offers_shown_data.labels, 
+        data.offers_shown_data.data, 
+        data.offers_rejected_data.data, 
+        'Показано', 
+        'Отказы'
+      );
+      updateChart(
+        partnersInvitedChart, 
+        data.partners_invited_data.labels, 
+        data.partners_invited_data.data, 
+        null, 
+        'Приглашенно партнеров', 
+        ''
+      );
+    },
+    error: function (error) {
+      console.error("Ошибка при получении данных:", error);
+    }
+  });
+});
+</script>
+{% endblock %}

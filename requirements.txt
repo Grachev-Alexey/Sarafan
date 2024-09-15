@@ -1,0 +1,17 @@
+Flask
+Flask-SQLAlchemy
+psycopg2-binary
+python-dotenv
+requests
+SQLAlchemy
+Flask[async]
+flask-migrate
+flask-adminlte3
+qrcode
+Pillow
+flask-login
+flask-wtf
+WTForms-SQLAlchemy
+gunicorn
+python-telegram-bot
+clipboard

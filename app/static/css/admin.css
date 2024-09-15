@@ -1,0 +1,60 @@
+/* Стили для кнопки "Столбцы" */
+.dt-button-collection {
+    background-color: #fff;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+}
+
+.dt-button-collection .dropdown-item {
+    padding: 0.5rem 1rem;
+    color: #495057;
+}
+
+.dt-button-collection .dropdown-item:hover {
+    background-color: #f8f9fa;
+}
+
+.dt-button-collection .dropdown-item.active,
+.dt-button-collection .dropdown-item:active {
+    background-color: #e9ecef;
+    color: #495057;
+}
+
+/* Добавление кастомных стилей для таблиц */
+.table {
+    border-spacing: 0 15px;
+    border-collapse: separate;
+}
+
+.table th {
+    background-color: #f4f6f9;
+    color: #333;
+    font-weight: bold;
+}
+
+.table td {
+    background-color: #ffffff;
+    border: none;
+    padding: 10px;
+    vertical-align: middle;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f1f5fa;
+}
+
+.table .badge {
+    padding: 5px 10px;
+    font-size: 90%;
+}
+
+.table-responsive {
+    overflow-x: auto;
+    padding: 10px;
+}
+
+.card {
+    margin-bottom: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}

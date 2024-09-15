@@ -1,0 +1,64 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Советы{% endblock %}
+
+{% block page_title %}Управление советами{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Список советов</h3>
+                        <div class="card-tools">
+                            <a href="{{ url_for('admin.create_tip') }}" class="btn btn-primary btn-sm">
+                                <i class="fas fa-plus"></i> Добавить совет
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-body table-responsive p-0">
+                        <table class="table table-hover text-nowrap">
+                            <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Текст</th>
+                                <th>Активен</th>
+                                <th>Действия</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for tip in tips %}
+                                <tr>
+                                    <td>{{ tip.id }}</td>
+                                    <td>{{ tip.text }}</td>
+                                    <td>
+                                        {% if tip.is_active %}
+                                            <span class="badge badge-success">Да</span>
+                                        {% else %}
+                                            <span class="badge badge-danger">Нет</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="{{ url_for('admin.edit_tip', tip_id=tip.id) }}"
+                                           class="btn btn-primary btn-sm">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <form method="POST" action="{{ url_for('admin.delete_tip', tip_id=tip.id) }}"
+                                              style="display: inline;">
+                                            <button type="submit" class="btn btn-danger btn-sm"
+                                                    onclick="return confirm('Вы уверены, что хотите удалить этот совет?')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

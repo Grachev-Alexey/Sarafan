@@ -1,0 +1,86 @@
+{% extends 'partner/base.html' %}
+
+{% block title %}Реферальная программа{% endblock %}
+
+{% block page_title %}Реферальная программа{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Реферальная программа</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h2>Ваша реферальная ссылка:</h2>
+                                <div class="input-group mb-3">
+                                    <label for="referralLink"></label><input type="text" class="form-control" id="referralLink"
+                                                                             value="{{ partner.referral_link }}" readonly>
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary copy-button" type="button"
+                                                data-clipboard-target="#referralLink">
+                                            <i class="fas fa-copy"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-4">
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <h5 class="card-title"><i class="fas fa-users"></i> Приглашено партнеров</h5>
+                                        <p class="card-text display-4">{{ referral_stats.invited_partners_count }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <h5 class="card-title"><i class="fas fa-user-plus"></i> Клиенты от рефералов
+                                        </h5>
+                                        <p class="card-text display-4">{{ total_clients_brought }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-4">
+                            <div class="col-md-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h3 class="card-title">Пригласить партнера через WhatsApp</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <form method="POST" action="{{ url_for('partner.invite_partner') }}">
+                                            <div class="form-group">
+                                                <label for="phone_number">Номер телефона (WhatsApp):</label>
+                                                <input type="text" class="form-control" id="phone_number"
+                                                       name="phone_number" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="salon_name">Название салона:</label>
+                                                <input type="text" class="form-control" id="salon_name"
+                                                       name="salon_name" required>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary">Отправить приглашение</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+    <script>
+        new ClipboardJS('.copy-button');
+    </script>
+{% endblock %}

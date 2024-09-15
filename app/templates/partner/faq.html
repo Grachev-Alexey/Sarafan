@@ -1,0 +1,55 @@
+{% extends 'partner/base.html' %}
+
+{% block title %}FAQ{% endblock %}
+
+{% block page_title %}FAQ{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Часто задаваемые вопросы</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="accordion" id="faqAccordion">
+                            {% for faq in faqs %}
+                                <div class="card">
+                                    <div class="card-header" id="heading{{ faq.id }}">
+                                        <h2 class="mb-0">
+                                            <button class="btn btn-link" type="button" data-toggle="collapse"
+                                                    data-target="#collapse{{ faq.id }}" aria-expanded="true"
+                                                    aria-controls="collapse{{ faq.id }}">
+                                                {{ faq.question }}
+                                            </button>
+                                        </h2>
+                                    </div>
+
+                                    <div id="collapse{{ faq.id }}" class="collapse {% if loop.first %}show{% endif %}"
+                                         aria-labelledby="heading{{ faq.id }}" data-parent="#faqAccordion">
+                                        <div class="card-body">
+                                            {{ faq.answer }}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        {% if not partner.faq_status.has_read_faq %}
+                            <form method="POST" action="{{ url_for('partner.confirm_faq') }}">
+                                <div class="form-check mt-3">
+                                    <input class="form-check-input" type="checkbox" id="confirmRead" name="confirmRead"
+                                           required>
+                                    <label class="form-check-label" for="confirmRead">
+                                        Я ознакомился(ась) с FAQ
+                                    </label>
+                                </div>
+                                <button type="submit" class="btn btn-primary mt-3">Подтвердить</button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

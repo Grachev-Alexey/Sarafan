@@ -1,0 +1,298 @@
+body {
+  background-color: #343E59;
+  background: #343E59;
+  color: #000;
+  font-family: 'Open Sans', sans-serif;
+}
+
+.body-bg {
+  background: #F3F4FA !important;
+}
+
+h1, h2, h3, h4, h5, h6, strong {
+  font-weight: 400;
+}
+
+body {
+  /*background: linear-gradient(45deg,#3a3a60,#5f5f8e);
+  min-height: 100vh;*/
+}
+
+.content-area {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.box {
+  background-color: #2B2D3E;
+  padding: 25px 20px;
+}
+
+.shadow {
+  box-shadow: 0px 1px 15px 1px rgba(69, 65, 78, 0.08);
+}
+
+.sparkboxes .box {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  text-shadow: 0 1px 1px 1px #666;
+  box-shadow: 0px 1px 15px 1px rgba(69, 65, 78, 0.08);
+  position: relative;
+  border-radius: 5px;
+}
+
+.sparkboxes .box .details {
+  position: absolute;
+  color: #fff;
+  transform: scale(0.7) translate(-22px, 20px);
+}
+
+.sparkboxes strong {
+  position: relative;
+  z-index: 3;
+  top: -8px;
+  color: #fff;
+}
+
+
+.sparkboxes .box1 {
+  background-image: linear-gradient(135deg, #ABDCFF 10%, #0396FF 100%);
+}
+
+.sparkboxes .box2 {
+  background-image: linear-gradient(135deg, #2AFADF 10%, #4C83FF 100%);
+}
+
+.sparkboxes .box3 {
+  background-image: linear-gradient(135deg, #FFD3A5 10%, #FD6585 100%);
+}
+
+.sparkboxes .box4 {
+  background-image: linear-gradient(135deg, #EE9AE5 10%, #5961F9 100%);
+}
+
+.card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    background-color: #fff;
+    border-bottom: none;
+}
+
+.card-title {
+    font-weight: 600;
+    color: #343a40; /* Темно-серый цвет */
+}
+
+.card-text {
+    font-size: 1.2rem;
+    color: #6c757d; /* Серый цвет */
+    margin-bottom: 0.5rem;
+}
+
+.display-4 {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #343a40; /* Темно-серый цвет */
+}
+
+.btn-primary {
+    background-color: #007bff; /* Синий цвет */
+    border-color: #007bff;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #0069d9; /* Более темный синий */
+    border-color: #0062cc;
+}
+
+/* Стили для уведомлений */
+
+#qrCodeModalWhatsapp img,
+#qrCodeModalTelegram img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Стили для имитации чата WhatsApp */
+.whatsapp-chat-preview {
+  width: 400px; 
+  height: 700px; 
+  overflow: hidden; 
+  border-radius: 35px; 
+  background-color: #000000; 
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
+
+.iphone-frame {
+  position: relative;
+  width: 98%;
+  height: 98%;
+  margin: 6px auto; 
+  overflow: hidden; 
+  background-color: #fff; 
+  border-radius: 35px;
+}
+
+.iphone-top {
+  position: absolute;
+  bottom: 0; /* Перемещаем полоску вниз */
+  left: 0;
+  width: 100%;
+  height: 30px;
+  background-color: #fff; /* Белый фон нижней части */
+  z-index: 2;
+}
+
+.speaker {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 15%;
+  height: 4px;
+  background-color: #000; /* Черный цвет динамика */
+  border-radius: 5px;
+}
+
+.camera {
+  position: absolute;
+  bottom: 10px; /* Перемещаем камеру вниз */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40%; 
+  height: 25px; 
+  background-color: transparent;
+  border-radius: 0 0 20px 20px;
+  box-shadow: 0px -5px 10px rgba(0, 0, 0, 0.2); /* Тень для выреза */
+}
+
+.whatsapp-header {
+  position: relative;
+  background-color: #075e54;
+  color: #fff;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  z-index: 1;
+}
+
+.whatsapp-header-left,
+.whatsapp-header-right {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.whatsapp-header-left {
+  justify-content: flex-start;
+}
+
+.whatsapp-header-right {
+  justify-content: flex-end;
+}
+
+.whatsapp-header-center {
+  flex: 2;
+  text-align: center;
+}
+
+.contact-name {
+  font-weight: bold;
+}
+
+.online-status {
+  font-size: 12px;
+  margin-left: 5px;
+}
+
+.whatsapp-chat {
+  position: relative;
+  height: calc(100% - 100px); 
+  overflow-y: auto;
+  background-image: url("https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png");
+  background-size: cover;
+  padding: 20px;
+  z-index: 1;
+}
+
+.message {
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 8px;
+  max-width: 70%;
+  clear: both;
+  position: relative;
+}
+
+.message.received {
+  background-color: #fff;
+  float: left;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.message.sent {
+  background-color: #dcf8c6;
+  float: right;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.message .text {
+  word-break: break-word;
+  font-size: 14px;
+}
+
+.timestamp {
+  position: absolute;
+  bottom: 5px;
+  right: 10px;
+  font-size: 12px;
+  color: #999;
+}
+
+.whatsapp-footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 50px;
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  z-index: 2;
+}
+
+.input-field {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  border-radius: 20px;
+  background-color: #f0f0f0;
+  padding: 5px 10px;
+}
+
+.input-field input {
+  border: none;
+  background: transparent;
+  outline: none;
+  flex: 1;
+  padding: 5px;
+  font-size: 14px;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
+}
+
+.actions i {
+  margin-right: 10px;
+  font-size: 18px;
+  color: #555;
+}

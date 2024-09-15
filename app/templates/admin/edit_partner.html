@@ -1,0 +1,18 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Редактировать партнера{% endblock %}
+
+{% block page_title %}Редактировать партнера {{ user.username }}{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+            <div class="form-group form-check">
+                {{ form.is_active(class="form-check-input", id="is_active") }}
+                {{ form.is_active.label(class="form-check-label", for="is_active") }}
+            </div>
+            <button type="submit" class="btn btn-primary">Сохранить</button>
+        </form>
+    </div>
+{% endblock %}

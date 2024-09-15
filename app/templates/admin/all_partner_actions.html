@@ -1,0 +1,47 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Действия партнеров{% endblock %}
+
+{% block page_title %}Действия партнеров{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Все действия партнеров</h3>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>Партнер</th>
+                                <th>Тип действия</th>
+                                <th>Детали</th>
+                                <th>Время</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for action in actions %}
+                                <tr>
+                                    <td>
+  {% for salon in action.partner.salons %}
+    {{ salon.name }} (ID: {{ salon.id }})
+    {% if not loop.last %}, {% endif %}
+  {% endfor %}
+  (Partner ID: {{ action.partner.id }})
+</td>
+                                    <td>{{ action.action_type }}</td>
+                                    <td>{{ action.details }}</td>
+                                    <td>{{ action.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
